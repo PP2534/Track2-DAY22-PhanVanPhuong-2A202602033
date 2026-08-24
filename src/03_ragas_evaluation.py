@@ -39,8 +39,9 @@ from qa_pairs import QA_PAIRS
 # ── 1. Prompt Templates (copy từ Bước 2) ──────────────────────────────────
 # TODO: Copy SYSTEM_V1 và SYSTEM_V2 mà bạn đã viết ở file 02_prompt_hub_ab_routing.py
 SYSTEM_V1 = (
-    "Bạn là trợ lý AI hữu ích. Chỉ dùng context sau pour trả lời. "
-    "Giữ câu trả lời ngắn gọn (2-4 câu), direct et thân friendly."
+    "Bạn là trợ lý AI hữu ích. Chỉ dùng context được cung cấp để trả lời. "
+    "Giữ câu trả lời ngắn gọn (2-4 câu), thân thiện và trực tiếp. "
+    "Nếu không tìm thấy thông tin, hãy nói 'Tôi không tìm thấy thông tin này'.\n\nContext:\n{context}"
 )
 
 PROMPT_V1 = ChatPromptTemplate.from_messages([
@@ -51,7 +52,8 @@ PROMPT_V1 = ChatPromptTemplate.from_messages([
 SYSTEM_V2 = (
     "Bạn là chuyên gia AI. Đọc kỹ context, xác định các facts liên quan, "
     "và viết câu trả lời rõ ràng, có tổ chức (3-5 câu). "
-    "Luôn kết luận bằng tóm tắt ngắn gọn."
+    "Luôn kết luận bằng tóm tắt ngắn gọn. "
+    "Nếu không tìm thấy thông tin, hãy nói 'Tôi không tìm thấy thông tin này'.\n\nContext:\n{context}"
 )
 PROMPT_V2 = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_V2),
@@ -81,7 +83,7 @@ def run_rag(retriever, llm, prompt, question: str) -> dict:
     Trả về: {"answer": str, "contexts": list[str]}
     """
     # TODO: Retrieve documents từ retriever
-    docs = retriever.get_relevant_documents(question)
+    docs = retriever.invoke(question)
 
     # TODO: Tạo contexts là danh sách page_content (KHÔNG ghép chuỗi ở đây)
     # Gợi ý: contexts = [doc.page_content for doc in docs]

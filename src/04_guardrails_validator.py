@@ -84,11 +84,14 @@ class PIIDetector(Validator):
 
         if found_pii:
             print(f"  ⚠️  Đã redact {len(found_pii)} PII: {[p[0] for p in found_pii]}")
-            # Trả về PassResult với value_override=redacted_text
-            return PassResult(value_override=redacted_text)
+            # Trả về FailResult với fix_value để OnFailAction.FIX thay thế output
+            return FailResult(
+                error_message=f"Phát hiện PII: {', '.join(set(p[0] for p in found_pii))}",
+                fix_value=redacted_text,
+            )
 
-        # Không có PII → trả về PassResult với value gốc
-        return PassResult(value_override=value)
+        # Không có PII → trả về PassResult
+        return PassResult()
 
 
 # ── 2. JSON Formatter Validator ────────────────────────────────────────────
@@ -142,8 +145,8 @@ class JSONFormatter(Validator):
         # Thử parse JSON trực tiếp
         try:
             parsed = json.loads(value)
-            # Trả về PassResult với json.dumps(parsed, indent=2)
-            return PassResult(value_override=json.dumps(parsed, indent=2))
+            # JSON hợp lệ — PassResult giữ nguyên value
+            return PassResult()
         except json.JSONDecodeError:
             pass
 
@@ -152,8 +155,11 @@ class JSONFormatter(Validator):
             repaired_text = self._repair(value)
             parsed        = json.loads(repaired_text)
             print(f"  🔧 JSON đã được sửa thành công")
-            # Trả về PassResult với json.dumps(parsed, indent=2)
-            return PassResult(value_override=json.dumps(parsed, indent=2))
+            # Dùng FailResult với fix_value để Guard thay thế output
+            return FailResult(
+                error_message="JSON đã được sửa",
+                fix_value=json.dumps(parsed, indent=2, ensure_ascii=False),
+            )
         except json.JSONDecodeError as e:
             return FailResult(error_message=f"JSON không hợp lệ sau khi sửa: {e}")
 

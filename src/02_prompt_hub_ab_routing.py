@@ -38,8 +38,9 @@ PROMPT_V2_NAME = "phan-van-phuong-rag-v2"
 # Gợi ý: "Bạn là trợ lý AI hữu ích. Chỉ dùng context sau để trả lời.
 #          Giữ câu trả lời ngắn gọn (2-4 câu). ..."
 SYSTEM_V1 = (
-    "Bạn là trợ lý AI hữu ích. Chỉ dùng context sau pour trả lời. "
-    "Giữ câu trả lời ngắn gọn (2-4 câu), direct et thân friendly."
+    "Bạn là trợ lý AI hữu ích. Chỉ dùng context được cung cấp để trả lời. "
+    "Giữ câu trả lời ngắn gọn (2-4 câu), thân thiện và trực tiếp. "
+    "Nếu không tìm thấy thông tin, hãy nói 'Tôi không tìm thấy thông tin này'.\n\nContext:\n{context}"
 )
 
 PROMPT_V1 = ChatPromptTemplate.from_messages([
@@ -53,7 +54,8 @@ PROMPT_V1 = ChatPromptTemplate.from_messages([
 SYSTEM_V2 = (
     "Bạn là chuyên gia AI. Đọc kỹ context, xác định các facts liên quan, "
     "và viết câu trả lời rõ ràng, có tổ chức (3-5 câu). "
-    "Luôn kết luận bằng tóm tắt ngắn gọn."
+    "Luôn kết luận bằng tóm tắt ngắn gọn. "
+    "Nếu không tìm thấy thông tin, hãy nói 'Tôi không tìm thấy thông tin này'.\n\nContext:\n{context}"
 )
 PROMPT_V2 = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_V2),
