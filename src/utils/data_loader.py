@@ -61,7 +61,8 @@ def build_vectorstore(chunks: list, embeddings):
     Returns:
         FAISS vectorstore đã được index và sẵn sàng dùng để retrieve
     """
-    from langchain_community.vectorstores import FAISS
+    from langchain_community.vectorstores.faiss import FAISS
+
 
     print(f"🔨 Đang tạo FAISS index từ {len(chunks)} chunks ...")
     vectorstore = FAISS.from_texts(chunks, embeddings)

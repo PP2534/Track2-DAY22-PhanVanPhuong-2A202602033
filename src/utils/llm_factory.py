@@ -105,7 +105,7 @@ def get_embeddings(provider: str = None):
     """
     provider = (provider or config.PROVIDER).lower()
 
-    if provider in ("openai", "openrouter"):
+    if provider in ("openai"):
         from langchain_openai import OpenAIEmbeddings
         kwargs = {
             "model": config.OPENAI_EMBEDDING_MODEL,
@@ -129,6 +129,14 @@ def get_embeddings(provider: str = None):
         return OpenAIEmbeddings(
             model=config.OPENAI_EMBEDDING_MODEL,
             api_key=config.OPENAI_API_KEY,
+        )
+        
+    elif provider == "openrouter":
+        from langchain_openai import OpenAIEmbeddings
+        return OpenAIEmbeddings(
+            model=config.OPENAI_EMBEDDING_MODEL,      # text-embedding-3-small
+            api_key=config.OPENROUTER_API_KEY,         # ← Dùng OpenRouter key
+            base_url=config.OPENROUTER_BASE_URL,       # ← https://openrouter.ai/api/v1
         )
 
     elif provider == "ollama":
